@@ -41,9 +41,13 @@ Change theme config changes
 
 https://user-images.githubusercontent.com/5092994/138938676-d528e144-341f-46e1-b03e-5ee1ea77af69.mp4
 
+Empty State Active Notifications
 
+https://user-images.githubusercontent.com/5092994/138943627-a02a4bd4-e6d6-43cc-8731-4967e69aaef7.mp4
 
+Empty State All Notifications
 
+<img width="320" alt="Screen Shot 2021-10-26 at 20 57 24" src="https://user-images.githubusercontent.com/5092994/138943689-fea42c91-7fc5-4795-9956-aa4ab9d48b56.png">
 
 
 
