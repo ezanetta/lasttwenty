@@ -27,30 +27,46 @@ class NotificationsViewModel @Inject constructor(
 
     fun fetchNotifications() {
         if (appHasNotificationsPermission) {
-            viewModelScope.launch {
-                getNotificationsUseCase.getNotifications().collect { notifications ->
-                    if (notifications.isNotEmpty()) {
-                        notifications.map { notification ->
-                            NotificationItem(
-                                notification.title,
-                                notification.text,
-                                notification.packageName,
-                                notification.active
-                            )
-                        }.also { notificationItems ->
-                            allNotifications.clear()
-                            allNotifications.addAll(notificationItems)
-                            showNotificationsState()
-                        }
-                    } else {
-                        _notificationsActivityState
-                            .postValue(NotificationsActivityState.ShowEmptyState)
-                    }
+            if (allNotifications.isNotEmpty()) {
+                restorePreviousNotifications()
+            } else {
+                viewModelScope.launch {
+                    getNotifications()
                 }
             }
         } else {
             _notificationsActivityState
                 .postValue(NotificationsActivityState.ShowRequestNotificationPermissionState)
+        }
+    }
+
+    private fun restorePreviousNotifications() {
+        if (showActiveNotifications) {
+            showActiveNotifications()
+        } else {
+            showAllNotifications()
+        }
+    }
+
+    private suspend fun getNotifications() {
+        getNotificationsUseCase.getNotifications().collect { notifications ->
+            if (notifications.isNotEmpty()) {
+                notifications.map { notification ->
+                    NotificationItem(
+                        notification.title,
+                        notification.text,
+                        notification.packageName,
+                        notification.active
+                    )
+                }.also { notificationItems ->
+                    allNotifications.clear()
+                    allNotifications.addAll(notificationItems)
+                    showNotificationsState()
+                }
+            } else {
+                _notificationsActivityState
+                    .postValue(NotificationsActivityState.ShowEmptyState)
+            }
         }
     }
 
@@ -63,6 +79,7 @@ class NotificationsViewModel @Inject constructor(
     }
 
     private fun showActiveNotifications() {
+        showActiveNotifications = true
         val activeNotifications = allNotifications.filter { it.active }
 
         if (activeNotifications.isNotEmpty()) {
