@@ -40,6 +40,14 @@ class NotificationsViewModel @Inject constructor(
         }
     }
 
+    fun showActiveNotificationsListener(isChecked: Boolean) {
+        if (isChecked) {
+            showActiveNotifications()
+        } else {
+            showAllNotifications()
+        }
+    }
+
     private fun restorePreviousNotifications() {
         if (showActiveNotifications) {
             showActiveNotifications()
@@ -85,7 +93,7 @@ class NotificationsViewModel @Inject constructor(
         if (activeNotifications.isNotEmpty()) {
             _notificationsActivityState.postValue(
                 NotificationsActivityState
-                    .ShowNotifications(activeNotifications as ArrayList<NotificationItem>)
+                    .ShowActiveNotifications(activeNotifications as ArrayList<NotificationItem>)
             )
         } else {
             _notificationsActivityState
@@ -104,14 +112,6 @@ class NotificationsViewModel @Inject constructor(
         } else {
             _notificationsActivityState
                 .postValue(NotificationsActivityState.ShowEmptyState)
-        }
-    }
-
-    fun showActiveNotificationsListener(isChecked: Boolean) {
-        if (isChecked) {
-            showActiveNotifications()
-        } else {
-            showAllNotifications()
         }
     }
 }
