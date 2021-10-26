@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Last twenty</string>
+    <string name="service_name">Notification listener</string>
+    <string name="app_icon">App icon</string>
+    <string name="enable_notifications">Enable notifications permission</string>
+    <string name="show_active">Show active</string>
+    <string name="show_all">Show all</string>
+    <string name="empty_state_c">There are no notifications</string>
+    <string name="show_active_notifications">ONLY ACTIVE</string>
+</resources>
