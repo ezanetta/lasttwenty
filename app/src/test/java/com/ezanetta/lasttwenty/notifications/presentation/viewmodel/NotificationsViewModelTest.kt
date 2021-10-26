@@ -5,12 +5,14 @@ import com.ezanetta.lasttwenty.TestCoroutineRule
 import com.ezanetta.lasttwenty.extensions.getOrAwaitValue
 import com.ezanetta.lasttwenty.notifications.data.db.Notification
 import com.ezanetta.lasttwenty.notifications.domain.usecase.GetNotificationsUseCase
+import com.ezanetta.lasttwenty.notifications.presentation.model.NotificationItem
 import com.ezanetta.lasttwenty.notifications.presentation.model.NotificationsActivityState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import org.junit.*
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 
 @ExperimentalCoroutinesApi
@@ -38,10 +40,13 @@ class NotificationsViewModelTest {
             notificationsViewModel.fetchNotifications()
 
             // THEN
-            assertTrue(
-                notificationsViewModel.notificationsActivityState.getOrAwaitValue()
-                        is NotificationsActivityState.ShowNotifications
+            val result = notificationsViewModel.notificationsActivityState.getOrAwaitValue()
+            assertTrue(result is NotificationsActivityState.ShowNotifications)
+            assertEquals(
+                (result as NotificationsActivityState.ShowNotifications).notifications,
+                allNotificationItems
             )
+
         }
     }
 
@@ -79,15 +84,17 @@ class NotificationsViewModelTest {
             notificationsViewModel.showActiveNotificationsListener(isChecked)
 
             // THEN
-            assertTrue(
-                notificationsViewModel.notificationsActivityState.getOrAwaitValue()
-                        is NotificationsActivityState.ShowActiveNotifications
+            val result = notificationsViewModel.notificationsActivityState.getOrAwaitValue()
+            assertTrue(result is NotificationsActivityState.ShowActiveNotifications)
+            assertEquals(
+                (result as NotificationsActivityState.ShowActiveNotifications).notifications,
+                activeNotificationItems
             )
         }
     }
 
     @Test
-    fun `showActiveNotificationsListener SHOULD call notificationActivityState liveData with ShowActiveNotifications value WHEN isChecked is false`() {
+    fun `showActiveNotificationsListener SHOULD call notificationActivityState liveData with ShowNotifications value WHEN isChecked is false`() {
         testCoroutineRule.runBlockingTest {
             // GIVEN
             notificationsViewModel.appHasNotificationsPermission = true
@@ -103,9 +110,11 @@ class NotificationsViewModelTest {
             notificationsViewModel.showActiveNotificationsListener(isChecked)
 
             // THEN
-            assertTrue(
-                notificationsViewModel.notificationsActivityState.getOrAwaitValue()
-                        is NotificationsActivityState.ShowNotifications
+            val result = notificationsViewModel.notificationsActivityState.getOrAwaitValue()
+            assertTrue(result is NotificationsActivityState.ShowNotifications)
+            assertEquals(
+                (result as NotificationsActivityState.ShowNotifications).notifications,
+                allNotificationItems
             )
         }
     }
@@ -142,15 +151,17 @@ class NotificationsViewModelTest {
             simpsonsNotification
         )
 
+        val activeNotificationItems = allNotifications.filter { it.active }.map {
+            NotificationItem(it.title, it.text, it.packageName, it.active)
+        }
+
+        val allNotificationItems = allNotifications.map {
+            NotificationItem(it.title, it.text, it.packageName, it.active)
+        }
+
         val notifications = flow {
             emit(
                 allNotifications
-            )
-        }
-
-        val activeNotifications = flow {
-            emit(
-                allNotifications.filter { it.active }
             )
         }
     }
