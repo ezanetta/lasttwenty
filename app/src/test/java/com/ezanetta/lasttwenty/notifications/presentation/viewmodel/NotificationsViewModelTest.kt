@@ -10,6 +10,7 @@ import com.ezanetta.lasttwenty.notifications.presentation.model.NotificationsAct
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -46,7 +47,25 @@ class NotificationsViewModelTest {
                 (result as NotificationsActivityState.ShowNotifications).notifications,
                 allNotificationItems
             )
+        }
+    }
 
+    @Test
+    fun `fetchNotifications SHOULD call notificationActivityState liveData with ShowEmptyState value WHEN appHasNotificationsPermission is true and there is no notifications`() {
+        testCoroutineRule.runBlockingTest {
+            // GIVEN
+            notificationsViewModel.appHasNotificationsPermission = true
+
+            coEvery {
+                getNotificationUseCase.getNotifications()
+            } returns emptyNotifications
+
+            // WHEN
+            notificationsViewModel.fetchNotifications()
+
+            // THEN
+            val result = notificationsViewModel.notificationsActivityState.getOrAwaitValue()
+            assertTrue(result is NotificationsActivityState.ShowEmptyState)
         }
     }
 
@@ -159,9 +178,15 @@ class NotificationsViewModelTest {
             NotificationItem(it.title, it.text, it.packageName, it.active)
         }
 
-        val notifications = flow {
+        val notifications: Flow<List<Notification>> = flow {
             emit(
                 allNotifications
+            )
+        }
+
+        val emptyNotifications: Flow<List<Notification>> = flow {
+            emit(
+                emptyList()
             )
         }
     }
