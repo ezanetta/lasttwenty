@@ -13,7 +13,6 @@
 
 - Architecture
   - MVVM Architecture (View - ViewModel - Model)
-  - [Bindables](https://github.com/skydoves/bindables) - Android DataBinding kit for notifying data changes to UI layers.
   - Repository pattern
 
 - Testing
