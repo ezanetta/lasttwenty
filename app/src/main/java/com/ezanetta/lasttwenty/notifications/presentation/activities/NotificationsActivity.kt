@@ -59,7 +59,8 @@ class NotificationsActivity : AppCompatActivity() {
         }
     }
 
-    private fun processActivityState(state: NotificationsActivityState) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun processActivityState(state: NotificationsActivityState) {
         when (state) {
             NotificationsActivityState.ShowEmptyState -> {
                 with(binding) {
@@ -87,6 +88,7 @@ class NotificationsActivity : AppCompatActivity() {
                     emptyState.hide()
                     enableNotifications.hide()
                     showActiveNotifications.show()
+                    showActiveNotifications.isChecked = true
                 }
             }
             NotificationsActivityState.ShowRequestNotificationPermissionState -> {

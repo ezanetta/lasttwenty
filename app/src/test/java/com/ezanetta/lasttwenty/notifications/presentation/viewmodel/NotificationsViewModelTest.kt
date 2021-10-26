@@ -5,7 +5,9 @@ import com.ezanetta.lasttwenty.TestCoroutineRule
 import com.ezanetta.lasttwenty.extensions.getOrAwaitValue
 import com.ezanetta.lasttwenty.notifications.data.db.Notification
 import com.ezanetta.lasttwenty.notifications.domain.usecase.GetNotificationsUseCase
-import com.ezanetta.lasttwenty.notifications.presentation.model.NotificationItem
+import com.ezanetta.lasttwenty.notifications.presentation.data.FakeNotificationsDataSource.activeNotificationItems
+import com.ezanetta.lasttwenty.notifications.presentation.data.FakeNotificationsDataSource.allNotificationItems
+import com.ezanetta.lasttwenty.notifications.presentation.data.FakeNotificationsDataSource.allNotifications
 import com.ezanetta.lasttwenty.notifications.presentation.model.NotificationsActivityState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -139,45 +141,6 @@ class NotificationsViewModelTest {
     }
 
     private companion object {
-
-        val rickAndMortyNotification = Notification(
-            1, "Rick and Morty App",
-            "Look at me Mort, I'm a notification",
-            "com.rickandmorty.app",
-            1635258857020,
-            true
-        )
-
-        val pokemonNotification = Notification(
-            1, "Pokemon app",
-            "Pikappchu",
-            "com.pokemon.app",
-            1635258857020,
-            true
-        )
-
-        val simpsonsNotification = Notification(
-            1, "Simpsons app",
-            "Doh",
-            "com.simpsons.app",
-            1635258857020,
-            false
-        )
-
-        val allNotifications = arrayListOf(
-            rickAndMortyNotification,
-            pokemonNotification,
-            simpsonsNotification
-        )
-
-        val activeNotificationItems = allNotifications.filter { it.active }.map {
-            NotificationItem(it.title, it.text, it.packageName, it.active)
-        }
-
-        val allNotificationItems = allNotifications.map {
-            NotificationItem(it.title, it.text, it.packageName, it.active)
-        }
-
         val notifications: Flow<List<Notification>> = flow {
             emit(
                 allNotifications
