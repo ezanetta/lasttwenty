@@ -83,6 +83,7 @@ class NotificationsActivity : AppCompatActivity() {
 
             is NotificationsActivityState.ShowActiveNotifications -> {
                 with(binding) {
+                    notifications.adapter = notificationsAdapter
                     notificationsAdapter.addAll(state.notifications)
                     notifications.show()
                     emptyState.hide()
